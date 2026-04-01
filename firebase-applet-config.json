@@ -1,0 +1,10 @@
+{
+  "projectId": "imageapi-server",
+  "appId": "1:450808499788:web:ed4a7edb3437efd319aee9",
+  "apiKey": "AIzaSyBwYX2nFHciQ6v2dNId1cla5_NziUIO8aA",
+  "authDomain": "imageapi-server.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-0e527ce9-fb7f-466d-91f6-37776f222450",
+  "storageBucket": "imageapi-server.firebasestorage.app",
+  "messagingSenderId": "450808499788",
+  "measurementId": ""
+}

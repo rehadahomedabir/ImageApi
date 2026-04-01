@@ -1,0 +1,5 @@
+{
+  "name": "Remix: Image-API",
+  "description": "A platform to upload images and access them via a public API.",
+  "requestFramePermissions": []
+}

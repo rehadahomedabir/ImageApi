@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile and API key information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "User email" },
+        "displayName": { "type": "string", "description": "User display name" },
+        "apiKey": { "type": "string", "description": "Unique API key for the user" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["uid", "email", "apiKey"]
+    },
+    "images": {
+      "title": "Image",
+      "description": "Metadata for uploaded images",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique image ID" },
+        "url": { "type": "string", "format": "uri", "description": "Public download URL" },
+        "name": { "type": "string", "description": "Original file name" },
+        "ownerId": { "type": "string", "description": "UID of the owner" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Upload timestamp" },
+        "size": { "type": "number", "description": "File size in bytes" },
+        "mimeType": { "type": "string", "description": "File MIME type" },
+        "storagePath": { "type": "string", "description": "Path in Cloud Storage" }
+      },
+      "required": ["id", "url", "name", "ownerId", "storagePath"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User profiles"
+    },
+    "/images/{imageId}": {
+      "schema": "images",
+      "description": "Image metadata"
+    }
+  }
+}

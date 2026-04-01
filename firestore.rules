@@ -1,0 +1,99 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Document ID: {userId}
+// Fields:
+//   - uid: string (required, immutable) - Firebase Auth UID
+//   - email: string (required, email format) - User email
+//   - displayName: string (optional) - User display name
+//   - role: string (optional) - 'admin' or 'user'
+//   - apiKey: string (required) - Unique API key
+//   - createdAt: string (required, ISO 8601) - Creation date
+//
+// Collection: images
+// Document ID: {imageId}
+// Fields:
+//   - id: string (required, immutable) - Image ID
+//   - url: string (required, URL format) - Public download URL
+//   - name: string (required) - Original file name
+//   - ownerId: string (required, immutable) - Owner UID
+//   - createdAt: string (required, ISO 8601) - Upload date
+//   - size: number (required, positive) - File size in bytes
+//   - mimeType: string (required) - File MIME type
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() &&
+             request.auth.token.email == "barehadahomed@gmail.com" &&
+             request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || 
+             (isAuthenticated() && 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow get: if isAuthenticated() && (request.auth.uid == userId || isSuperAdmin() || isAdmin());
+      allow list: if isSuperAdmin() || isAdmin();
+      
+      allow create: if isOwner(userId) && 
+                      request.resource.data.uid == userId &&
+                      isValidEmail(request.resource.data.email) &&
+                      (!('role' in request.resource.data) || request.resource.data.role == 'user' || isSuperAdmin());
+      
+      allow update: if (isOwner(userId) || isSuperAdmin() || isAdmin()) &&
+                      request.resource.data.uid == resource.data.uid &&
+                      (isSuperAdmin() || isAdmin() || request.resource.data.role == resource.data.role);
+      
+      allow delete: if isSuperAdmin() || isAdmin();
+    }
+
+    match /images/{imageId} {
+      allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isSuperAdmin() || isAdmin());
+      
+      allow create: if isAuthenticated() && 
+                      request.resource.data.ownerId == request.auth.uid &&
+                      isValidUrl(request.resource.data.url);
+      
+      allow update: if isAuthenticated() && 
+                      (resource.data.ownerId == request.auth.uid || isSuperAdmin() || isAdmin()) &&
+                      request.resource.data.ownerId == resource.data.ownerId;
+      
+      allow delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isSuperAdmin() || isAdmin());
+    }
+  }
+}

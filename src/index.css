@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-accent: #6366f1; /* Indigo 500 */
+  --color-accent-dark: #4f46e5; /* Indigo 600 */
+  --color-surface: #09090b;
+  --color-border: #27272a;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased transition-colors duration-300 selection:bg-accent selection:text-white;
+    background-color: #ffffff;
+    color: #000000;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+  
+  .dark body {
+    background-color: #09090b;
+    color: #fafafa;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight leading-tight;
+  }
+}
+
+@layer utilities {
+  .grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+
+  .bento-card {
+    @apply bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 md:p-8 transition-all duration-300 hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/5 min-h-[160px] flex flex-col justify-between;
+  }
+
+  .glass-nav {
+    @apply bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-black via-zinc-800 to-zinc-600 dark:from-white dark:via-zinc-200 dark:to-zinc-500;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-xl font-display font-bold text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-accent/20;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-black dark:text-zinc-100 rounded-xl font-display font-bold text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95;
+  }
+
+  .micro-label {
+    @apply text-[11px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-400 dark:text-zinc-500;
+  }
+
+  .data-row {
+    @apply flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 transition-all duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/50;
+  }
+
+  .section-divider {
+    @apply h-[1px] w-full bg-zinc-100 dark:bg-zinc-800 my-8;
+  }
+
+  .glass-card {
+    @apply bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl border border-white/20 dark:border-zinc-800/50 rounded-3xl;
+  }
+}
